@@ -1,0 +1,193 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling for Background and Font */
+body {
+    font-family: 'Roboto', sans-serif; /* Updated Font Family */
+    background: linear-gradient(to right, #194650, #194650);
+    background-blend-mode: overlay;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    background-attachment: fixed;
+    background-size: auto, 300px;
+}
+
+/* Centering the Form on Page */
+form {
+    background-color: #2da4c7;
+    padding: 25px;
+    margin: 50px auto;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Improving the Look of Inputs and Select Box */
+input[type="number"],
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+/* Hover and Focus Effects for Inputs */
+input[type="number"]:hover,
+input[type="text"]:hover,
+select:hover,
+textarea:hover,
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #70b8ff;
+}
+
+/* Styling Radio Buttons Horizontally and Improving Labels */
+
+
+/* Styling the Submit Button */
+input[type="submit"] {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 600px) {
+    form {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* New Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+form {
+    animation: fadeIn 2s ease-out;
+    /* Existing Form Styles... */
+}
+
+/* New Layout Component: Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #06eb52;
+    background-color: #333;
+}
+
+/* Parallax Background for any element with class .parallax */
+.parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+    /* Existing Responsive Styles... */
+}
+
+.financial-section {
+    margin: 20px auto;
+    max-width: 800px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.financial-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.financial-section form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.financial-section input[type="number"] {
+    width: 95%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.financial-section input[type="submit"] {
+    grid-column: span 2;
+    padding: 10px;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.financial-section input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.financial-section section {
+    margin-bottom: 30px;
+}
+
+button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Additional CSS for dynamically added form fields */
+.debt-field {
+    margin-bottom: 10px;
+}

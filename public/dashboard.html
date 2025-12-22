@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Application</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="../controllers/dashboard.js" defer></script>
+</head>
+<body>
+
+<!-- Personal Information Form -->
+<form id="personalInfoForm">
+    <h2>Personal Information</h2>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+
+    <label for="employmentStatus">Employment Status:</label>
+    <select id="employmentStatus" name="employmentStatus" required>
+        <option value="student">Student</option>
+        <option value="employed">Employed</option>
+        <option value="selfEmployed">Self-Employed</option>
+        <option value="unemployed">Unemployed</option>
+    </select>
+
+
+    <label for="income_monthly">income Monthly:</label>
+    <input type="number" id="income_monthly" name="income_monthly" required>
+
+
+</form>
+
+
+<section class="expenses-cls">
+
+    <form>
+
+        <h2>Financial Overview - Monthly Expenses</h2>
+        <label for="rent">Rent:</label>
+        <input type="number" id="rent" name="rent">
+
+        <label for="utilities">Utilities:</label>
+        <input type="number" id="utilities" name="utilities">
+
+        <label for="groceries">Groceries:</label>
+        <input type="number" id="groceries" name="groceries">
+
+        <label for="entertainment">Entertainment:</label>
+        <input type="number" id="entertainment" name="entertainment">
+        <label for="total_dept">Total Dept:</label>
+        <input type="number" id="total_dept" name="total_dept">
+    </form>
+</section>
+
+<section class="mortgage_cls">
+
+    <form>
+
+        <h2>Mortgage</h2>
+        <label for="principal">Principal:</label>
+        <input type="number" id="principal" name="principal">
+
+        <label for="monthly_interest_rate">Monthly Interest Rate:</label>
+        <input type="number" id="monthly_interest_rate" name="monthly_interest_rate">
+
+        <label for="number_of_payments">Number of Payments:</label>
+        <input type="number" id="number_of_payments" name="number_of_payments">
+
+    </form>
+</section>
+
+<section class="other_value">
+    <form>
+        <h2>Other Values</h2>
+
+        <label for="total_assets">Total Assets:</label>
+        <input type="number" id="total_assets" name="total_assets">
+        <label for="total_liabilities">Total Liabilities:</label>
+        <input type="number" id="total_liabilities" name="total_liabilities">
+
+        <label for="months_of_coverage_desired">Months of Coverage Desired:</label>
+        <input type="number" id="months_of_coverage_desired" name="months_of_coverage_desired">
+
+        <label for="desired_retirement_income">Desired Retirement Income:</label>
+        <input type="number" id="desired_retirement_income" name="desired_retirement_income">
+
+        <label for="withdrawal_rate">Withdrawal Rate:</label>
+        <input type="number" id="withdrawal_rate" name="withdrawal_rate">
+        <label for="total_credit_card_balances">Total Credit Card Balances:</label>
+        <input type="number" id="total_credit_card_balances" name="total_credit_card_balances">
+
+        <label for="total_credit_card_limits">Total Credit Card Limits:</label>
+        <input type="number" id="total_credit_card_limits" name="total_credit_card_limits">
+
+        <label for="property_value">Property Value:</label>
+        <input type="number" id="property_value" name="property_value">
+
+    </form>
+</section>
+
+
+<section class="debts">
+    <form>
+        <h3>Debts</h3>
+        <label for="debt">Debt:</label>
+        <input type="number" id="debt" name="debt">
+    </form>
+</section>
+
+<div style="text-align: center; margin-top: 1px;">
+    <p id="info" style="text-align: center; margin-bottom: 20px"></p>
+    <button type="submit" id="finalSubmitButton"
+            style="padding: 10px 20px; font-size: 16px; background-color: #0055ce; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Save & Calculate
+    </button>
+      <p id="info_result" style="text-align: center; margin-bottom: 20px"></p>
+</div>
+
+<section id="result_section" class="result_cls" hidden>
+
+    <form id="result_form">
+
+
+        <h2>Result</h2>
+         <h3 id="user_name" style="text-align: center;padding: 10px 20px; background-color: #1b2c46; color: white; border: none; border-radius: 5px;"></h3>
+
+        <label for="net_worth">Net Worth: </label>
+        <label id="net_worth" for="net_worth"></label>
+        <br>
+        <label  for="budget_variance">Budget Variance: </label>
+                <label id="budget_variance" for="budget_variance"></label>
+        <br>
+        <label  for="debt_to_income_ratio">Debt to Income Ratio: </label>
+                <label id="debt_to_income_ratio" for="debt_to_income_ratio"></label>
+        <br>
+        <label  for="savings_rate">Savings Rate: </label>
+                <label id="savings_rate" for="savings_rate"></label>
+        <br>
+        <label  for="emergency_fund">Emergency Fund: </label>
+                <label id="emergency_fund" for="emergency_fund"></label>
+        <br>
+        <label  for="retirement_goal">Retirement Goal: </label>
+                <label id="retirement_goal" for="retirement_goal"></label>
+        <br>
+        <label  for="credit_utilization_ratio">Credit Utilization Ratio: </label>
+                <label id="credit_utilization_ratio" for="credit_utilization_ratio"></label>
+        <br>
+        <label  for="monthly_mortgage_repayment">Monthly Mortgage Repayment: </label>
+                <label id="monthly_mortgage_repayment" for="monthly_mortgage_repayment"></label>
+        <br>
+        <label for="monthly_savings">Monthly Savings: </label>
+                <label id="monthly_savings" for="monthly_savings"></label>
+        <br>
+        <label  for="loan_to_value_ratio">Loan to Value Ratio: </label>
+        <label id="loan_to_value_ratio" for="loan_to_value_ratio"></label>
+
+    </form>
+</section>
+
+</body>
+</html>

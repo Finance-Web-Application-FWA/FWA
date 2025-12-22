@@ -1,0 +1,80 @@
+/* General body css */
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+    .signup-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Container for the form */
+  .signup-container {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Styling for form headings */
+  h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Grouping label and input */
+  .input-group {
+    margin-bottom: 20px;
+  }
+  
+  /* Label styling */
+  .input-group label {
+    display: block;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  /* Input field styling */
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Button styling */
+  button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    background-color: darkgreen;
+  }
+  
+  /* Message display */
+  #message {
+    text-align: center;
+    margin: 10px 0;
+  }
+  
