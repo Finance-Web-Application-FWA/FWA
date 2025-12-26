@@ -29,6 +29,8 @@ A full-stack personal finance management application with AI-powered financial a
    GEMINI_API_KEY=your_api_key_here
    PORT=3000
    ```
+   No API key is included in this repository.  
+   You must provide your own valid Google Gemini API key to enable AI features.
 
 3. **Start the server**
    ```bash
