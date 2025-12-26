@@ -358,9 +358,26 @@ function generateAIReport(username_id, age, employmentStatus, income_monthly, re
         loan_to_value_ratio: loan_to_value_ratio
     };
 
+    // Request compact report to save tokens by default
+    reportData.compact = true;
+
+    // Show loading state and disable submit
+    const submitBtn = document.getElementById('finalSubmitButton');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+    }
+    const aiReportEl = document.getElementById("ai_report");
+    if (aiReportEl) aiReportEl.innerHTML = '<p style="color: #666;">Generating concise AI report… <span style="font-style:italic;">(compact)</span></p>';
+
     var xhttp3 = new XMLHttpRequest();
     xhttp3.onreadystatechange = function () {
         if (this.readyState == 4) {
+            // Re-enable submit button
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
             if (this.status == 200) {
                 try {
                     var response_text = JSON.parse(this.responseText);
@@ -393,11 +410,13 @@ function generateAIReport(username_id, age, employmentStatus, income_monthly, re
     }
 
     xhttp3.onerror = function () {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
         document.getElementById("ai_report").innerHTML = 
             '<p style="color: red;">Network error. Cannot reach server.</p>';
     }
 
     xhttp3.ontimeout = function () {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
         document.getElementById("ai_report").innerHTML = 
             '<p style="color: orange;">Request timeout. Server took too long to respond.</p>';
     }

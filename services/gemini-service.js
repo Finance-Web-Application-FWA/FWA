@@ -1,30 +1,104 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
 
+if (!process.env.GEMINI_API_KEY) {
+    console.warn('GEMINI_API_KEY is not set in environment. AI requests will fail.');
+}
+const crypto = require('crypto');
+
+// Simple in-memory cache to avoid repeated identical requests and save quota
+const reportCache = new Map();
+const CACHE_TTL = process.env.REPORT_CACHE_TTL ? parseInt(process.env.REPORT_CACHE_TTL, 10) : 6 * 60 * 60 * 1000; // 6 hours
+const CACHE_MAX = process.env.REPORT_CACHE_MAX ? parseInt(process.env.REPORT_CACHE_MAX, 10) : 200;
+
+function makeCacheKey(financialData, compact) {
+    const hash = crypto.createHash('sha256');
+    hash.update(JSON.stringify({ financialData, compact }));
+    return hash.digest('hex');
+}
+
+function cacheGet(key) {
+    const entry = reportCache.get(key);
+    if (!entry) return null;
+    if (Date.now() - entry.ts > CACHE_TTL) {
+        reportCache.delete(key);
+        return null;
+    }
+    return entry.value;
+}
+
+function cacheSet(key, value) {
+    // enforce max entries
+    if (reportCache.size >= CACHE_MAX) {
+        // delete oldest entry
+        let oldestKey = null;
+        let oldestTs = Infinity;
+        for (const [k, v] of reportCache.entries()) {
+            if (v.ts < oldestTs) {
+                oldestTs = v.ts;
+                oldestKey = k;
+            }
+        }
+        if (oldestKey) reportCache.delete(oldestKey);
+    }
+    reportCache.set(key, { ts: Date.now(), value });
+}
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateFinancialReport(financialData) {
     try {
+        console.log('generateFinancialReport: starting generation', { userId: financialData.username_id ? true : false });
+        // Determine compact mode: environment forces compact if COMPACT_REPORT=1, or client can pass compact flag
+        const compactEnv = process.env.COMPACT_REPORT === '1';
+        const compact = compactEnv || !!financialData.compact;
+
+        // Check cache first
+        const cacheKey = makeCacheKey(financialData, compact);
+        const cached = cacheGet(cacheKey);
+        if (cached) {
+            console.log('generateFinancialReport: cache hit');
+            return { success: true, report: cached.report, timestamp: cached.timestamp, cached: true };
+        }
+
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        // Create a detailed prompt from user's financial data
-        const prompt = createFinancialPrompt(financialData);
+        // Create a detailed prompt from user's financial data (compact if requested)
+        const prompt = createFinancialPrompt(financialData, compact);
 
+        // Ask the model to be concise to save tokens; SDK parameter may vary so prefer prompt guidance
         const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
 
-        return {
-            success: true,
-            report: text,
-            timestamp: new Date().toISOString()
-        };
+        // Try to robustly extract text from different client shapes
+        let text = null;
+        try {
+            if (result?.response?.text) {
+                text = typeof result.response.text === 'function' ? await result.response.text() : result.response.text;
+            } else if (result?.candidates && result.candidates.length > 0 && result.candidates[0].output) {
+                text = result.candidates[0].output;
+            } else if (result?.output) {
+                text = result.output;
+            } else {
+                text = JSON.stringify(result);
+            }
+        } catch (innerErr) {
+            console.error('Error extracting text from generative result:', innerErr, 'result:', result);
+            text = JSON.stringify(result);
+        }
+
+        const responseObj = { success: true, report: text, timestamp: new Date().toISOString() };
+        try {
+            cacheSet(cacheKey, responseObj);
+        } catch (e) {
+            console.warn('Failed to cache report:', e && e.message);
+        }
+
+        return responseObj;
     } catch (error) {
-        console.error("Gemini API Error:", error);
+        console.error("Gemini API Error:", error && (error.stack || error));
         return {
             success: false,
-            error: error.message,
-            report: "Failed to generate report. Please try again."
+            error: (error && error.message) || String(error),
+            report: "Failed to generate report. Please check server logs and API key settings."
         };
     }
 }
@@ -62,6 +136,14 @@ function createFinancialPrompt(data) {
         monthly_savings,
         loan_to_value_ratio
     } = data;
+
+    if (compact) {
+        return `You are a concise financial advisor. Keep the report under ~250 words and use simple bullets. Provide a 3-line summary, 3 strengths, 3 concerns, and 4 prioritized actions. Use percentages or dollar amounts only when straightforward.
+
+DATA: Age:${age}; Employment:${employmentStatus}; Income:${income_monthly}; Rent:${rent}; Utilities:${utilities}; Groceries:${groceries}; Entertainment:${entertainment}; MonthlyDebt:${total_dept}; Assets:${total_assets}; Liabilities:${total_liabilities}; NetWorth:${net_worth}; MortgagePrincipal:${principal}; InterestRate:${monthly_interest_rate}; Payments:${number_of_payments}; MortgageRepay:${monthly_mortgage_repayment}; Property:${property_value}; LTV:${loan_to_value_ratio}%; CreditBal:${total_credit_card_balances}; CreditLimit:${total_credit_card_limits}; CreditUtil:${credit_utilization_ratio}%; RetirementGoal:${retirement_goal}; EmergencyFund:${emergency_fund}; SavingsRate:${savings_rate}%; MonthlySavings:${monthly_savings}; BudgetVariance:${budget_variance}; DTI:${debt_to_income_ratio}.
+
+Respond in plain text with short bullets and labeled sections: Summary; Strengths; Concerns; Actions (prioritized).`; 
+    }
 
     return `
 You are a professional financial advisor. Analyze the following financial information and provide a detailed, personalized financial report with actionable advice.
