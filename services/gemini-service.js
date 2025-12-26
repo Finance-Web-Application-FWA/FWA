@@ -60,10 +60,14 @@ async function generateFinancialReport(financialData) {
             return { success: true, report: cached.report, timestamp: cached.timestamp, cached: true };
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         // Create a detailed prompt from user's financial data (compact if requested)
         const prompt = createFinancialPrompt(financialData, compact);
+
+        // Log the data and prompt for debugging
+        console.log('Financial data sent to Gemini:', JSON.stringify(financialData, null, 2));
+        console.log('Prompt sent to Gemini:', prompt);
 
         // Ask the model to be concise to save tokens; SDK parameter may vary so prefer prompt guidance
         const result = await model.generateContent(prompt);
@@ -95,6 +99,27 @@ async function generateFinancialReport(financialData) {
         return responseObj;
     } catch (error) {
         console.error("Gemini API Error:", error && (error.stack || error));
+        
+        // Check for quota exceeded errors and provide user-friendly message
+        const errorMsg = (error && error.message) || String(error);
+        if (errorMsg.includes('quota') || errorMsg.includes('Quota') || errorMsg.includes('429')) {
+            // Try to extract retry delay from the error message
+            const retryMatch = errorMsg.match(/retry in (\d+\.?\d*)s/);
+            let retryMessage = '';
+            if (retryMatch) {
+                const seconds = parseFloat(retryMatch[1]);
+                const minutes = Math.ceil(seconds / 60);
+                retryMessage = ` Please try again in about ${minutes} minute${minutes > 1 ? 's' : ''}.`;
+            }
+            
+            return {
+                success: false,
+                error: `API quota exceeded. The free tier limit has been reached.${retryMessage} Consider upgrading your Google AI plan for unlimited access.`,
+                report: "Unable to generate financial report due to API quota limits.",
+                isQuotaExceeded: true
+            };
+        }
+        
         return {
             success: false,
             error: (error && error.message) || String(error),
@@ -103,7 +128,7 @@ async function generateFinancialReport(financialData) {
     }
 }
 
-function createFinancialPrompt(data) {
+function createFinancialPrompt(data, compact) {
     const {
         age,
         employmentStatus,

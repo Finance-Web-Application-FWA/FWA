@@ -186,8 +186,15 @@ function save_and_calculate(username_id) {
                         document.getElementById("info").innerHTML = response_text['response']['data'];
                         document.getElementById("info").style.color = "white";
                     } else if (response_text['response']['result'] == 'fail') {
-                        document.getElementById("info").innerHTML = response_text['response']['data'];
-                        document.getElementById("info").style.color = "red";
+                        const errorMsg = response_text['response']['data'];
+                        if (response_text['response']['isQuotaExceeded'] || errorMsg.includes('API quota exceeded')) {
+                            // Quota exceeded - show in orange with friendly message
+                            document.getElementById("info").innerHTML = "Sorry, you have exceeded the daily limit for using the AI advisor. Please come back later or upgrade your plan for unlimited access.";
+                            document.getElementById("info").style.color = "orange";
+                        } else {
+                            document.getElementById("info").innerHTML = errorMsg;
+                            document.getElementById("info").style.color = "red";
+                        }
                     }
                 } catch (e) {
                     document.getElementById("info").innerHTML = 'Error: Invalid server response';

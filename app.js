@@ -173,11 +173,13 @@ app.post("/generatereport", async function (request, response) {
                 }
             }));
         } else {
+            const errorData = reportResult.isQuotaExceeded ? reportResult.error : 'Error generating report: ' + reportResult.error;
             response.writeHead(200, {"Content-Type": "application/json"});
             response.write(JSON.stringify({
                 response: {
                     'result': 'fail',
-                    'data': 'Error generating report: ' + reportResult.error
+                    'data': errorData,
+                    'isQuotaExceeded': reportResult.isQuotaExceeded || false
                 }
             }));
         }
