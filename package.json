@@ -1,8 +1,18 @@
 {
+  "name": "personal-finance-app",
+  "version": "2.0.0",
+  "description": "Personal finance application with AI-powered financial advisor",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcrypt": "^5.1.1",
     "connect-sqlite3": "^0.9.13",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "sqlite3": "^5.1.7",

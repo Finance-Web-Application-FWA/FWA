@@ -1,7 +1,7 @@
-
+const geminiService = require('./services/gemini-service.js');
 const express = require('express');
 const session = require('express-session');
-const {uuid} = require('uuid');
+const uuid = require('uuid');
 var users_model = require('./models/users.js')
 var dashboard_model = require('./models/dashboard.js')
 var hash_utility = require('./utilities/hashing')
@@ -18,8 +18,7 @@ app.use(session(
     {
         name: 'SessionCookie',
         genid: function (req) {
-
-            return uuid;
+            return uuid.v4();
         }, // use UUIDs for session IDs
         secret: '1234567890',
         resave: false,
@@ -28,9 +27,11 @@ app.use(session(
     }));
 app.use(allowCrossDomain);
 app.use(express.json());
+app.use(urlencodedParser);
+app.use(express.static('public'));
 
 
-app.post("/register", urlencodedParser, async function (request, response) {
+app.post("/register", async function (request, response) {
     const {username, password} = request.body;
     var return_message = {'response': {'result': '', 'data': ''}};
     var exist_response = await users_model.is_username_exist(username);
@@ -57,10 +58,10 @@ app.post("/register", urlencodedParser, async function (request, response) {
     }
     response.writeHead(200, {"Content-Type": "application/json"});
     response.write(JSON.stringify(return_message));
-    response.end()
+    response.end();
 });
 
-app.post("/login", urlencodedParser, async function (request, response) {
+app.post("/login", async function (request, response) {
     const {username, password} = request.body;
     var return_message = {'response': {'result': '', 'data': ''}};
     var hashed_password = hash_utility.HashPassword(password)
@@ -80,7 +81,7 @@ app.post("/login", urlencodedParser, async function (request, response) {
     response.end()
 });
 
-app.post("/saverawdata", urlencodedParser, async function (request, response) {
+app.post("/saverawdata", async function (request, response) {
     const {
         username_id,
         age,
@@ -124,7 +125,7 @@ app.post("/saverawdata", urlencodedParser, async function (request, response) {
     response.end()
 });
 
-app.post("/saveresultdata", urlencodedParser, async function (request, response) {
+app.post("/saveresultdata", async function (request, response) {
     const {username_id,net_worth} = request.body;
     var return_message = {'response': {'result': '', 'data': ''}};
     var insert_response = await dashboard_model.insertDashboardResultData(username_id,net_worth)
@@ -146,13 +147,60 @@ app.post("/saveresultdata", urlencodedParser, async function (request, response)
     response.end()
 });
 
+app.post("/generatereport", async function (request, response) {
+    const financialData = request.body;
+    
+    // Validate that required data exists
+    if (!financialData.username_id) {
+        response.writeHead(400, {"Content-Type": "application/json"});
+        response.write(JSON.stringify({
+            response: {'result': 'fail', 'data': 'User not authenticated'}
+        }));
+        response.end();
+        return;
+    }
 
+    try {
+        const reportResult = await geminiService.generateFinancialReport(financialData);
+        
+        if (reportResult.success) {
+            response.writeHead(200, {"Content-Type": "application/json"});
+            response.write(JSON.stringify({
+                response: {
+                    'result': 'ok',
+                    'data': reportResult.report,
+                    'timestamp': reportResult.timestamp
+                }
+            }));
+        } else {
+            response.writeHead(200, {"Content-Type": "application/json"});
+            response.write(JSON.stringify({
+                response: {
+                    'result': 'fail',
+                    'data': 'Error generating report: ' + reportResult.error
+                }
+            }));
+        }
+    } catch (error) {
+        console.error("Report generation error:", error);
+        response.writeHead(500, {"Content-Type": "application/json"});
+        response.write(JSON.stringify({
+            response: {
+                'result': 'fail',
+                'data': 'Server error while generating report'
+            }
+        }));
+    }
+    response.end();
+});
+
+// 404 handlers MUST be last
 app.get('*', function (request, response) {
     response.status(404).send('Error 404 - Page or URL is not Valid (GET)' + request.url);
     response.end()
 });
 
-app.post('*', urlencodedParser, function (request, response) {
+app.post('*', function (request, response) {
     response.status(404).send('Error 404 - Page or URL is not Valid (Post)' + JSON.stringify(request.body));
     response.end()
 });
@@ -161,4 +209,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-

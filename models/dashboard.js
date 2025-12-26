@@ -30,6 +30,74 @@ database.serialize(() => {
                       data
                       TEXT
                   )`);
+    
+    database.run(`CREATE TABLE IF NOT EXISTS dashboard_data
+                  (
+                      id
+                      INTEGER
+                      PRIMARY
+                      KEY
+                      AUTOINCREMENT,
+                      username_id
+                      INTEGER
+                      NOT
+                      NULL,
+                      age
+                      INTEGER,
+                      employmentStatus
+                      TEXT,
+                      income_monthly
+                      REAL,
+                      rent
+                      REAL,
+                      utilities
+                      REAL,
+                      groceries
+                      REAL,
+                      entertainment
+                      REAL,
+                      total_dept
+                      REAL,
+                      total_assets
+                      REAL,
+                      total_liabilities
+                      REAL,
+                      principal
+                      REAL,
+                      monthly_interest_rate
+                      REAL,
+                      number_of_payments
+                      INTEGER,
+                      months_of_coverage_desired
+                      INTEGER,
+                      desired_retirement_income
+                      REAL,
+                      withdrawal_rate
+                      REAL,
+                      total_credit_card_balances
+                      REAL,
+                      total_credit_card_limits
+                      REAL,
+                      property_value
+                      REAL,
+                      debt
+                      REAL
+                  )`);
+
+    database.run(`CREATE TABLE IF NOT EXISTS dashboard_results
+                  (
+                      id
+                      INTEGER
+                      PRIMARY
+                      KEY
+                      AUTOINCREMENT,
+                      username_id
+                      INTEGER
+                      NOT
+                      NULL,
+                      net_worth
+                      REAL
+                  )`);
 });
 
 

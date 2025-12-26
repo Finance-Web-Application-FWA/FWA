@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="css/signup.css">
-    <script src="../controllers/signup.js" defer></script>
+    <script src="js/signup.js" defer></script>
 </head>
 <body>
 <div class="signup-container">
     <h2>Signup Page</h2>
     <p>Please Register your new account.</p>
     <form id="signupForm">
-x
         <div class="input-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required>
@@ -26,7 +25,7 @@ x
             <input type="password" id="confirm-password" name="confirm-password" required>
         </div>
         <button type="submit">Sign Up</button>
-        <button onclick="window.location.href = '../index.html';" class="button">Back</button>
+        <button onclick="window.location.href = '/index.html';" class="button">Back</button>
         <p id="info"></p>
     </form>
     <p class="signup-text">Already Have Account? <a href="login.html" class="signup-button">Login into Account</a></p>
