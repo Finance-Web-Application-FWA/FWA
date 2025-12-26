@@ -89,3 +89,10 @@ npm run dev    # Start with auto-reload
 - Check browser console (F12) for frontend errors
 - Check server terminal for backend logs
 - Verify `.env` file is configured correctly
+
+## Contributors
+
+| Full Name              | GitHub ID      | MMU ID     |
+|------------------------|----------------|------------|
+| Artin Seyf             | ArtinSeyf      | 24784426   |
+| Kiyarash Shirmohammadi | k-shirmohammadi| 23761919   |
